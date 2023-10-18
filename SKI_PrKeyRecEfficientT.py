@@ -1,4 +1,3 @@
-
 #hashed cells corrected (values are active if and only if at least diff or value is active, when both are inactive, value is not active)
 #corrected the Kin and Kout
 #improved version of key recovery, guessing the internal state in effective cases
@@ -16,20 +15,11 @@ class SKINNY:
 	def column(A, j):
 	    return [A[j], A[j+4], A[j+8], A[j+12]]
 
-	def ShiftRow_AES(A):
-	    return [A[0], A[1], A[2], A[3],\
-		    A[5], A[6], A[7], A[4],\
-		    A[10],A[11],A[8], A[9],\
-		    A[15],A[12],A[13],A[14]]
-
 	def ShiftRow(A):
 	    return [A[0], A[1], A[2], A[3],\
 		    A[7], A[4], A[5], A[6],\
 		    A[10],A[11],A[8], A[9],\
 		    A[13],A[14],A[15],A[12]]
-	def inMixAtRound(r):
-	    assert(r >= 0)
-	    return ['inX_r' + str(r) + '_' + str(i) for i in range(0,16)]
 		    
 class Truncated:
 	S_T = [(0, 1, 2, 1, -1, 1, -1, 0, -4, -2, 0), (0, 0, -2, -1, 1, 0, 1, 1, 2, 1, 0), (0, -1, 0, 0, 1, 0, 1, -1, 2, 1, 0), (0, -1, 1, 0, 0, -1, 1, 1, 1, 0, 0), (0, 0, 0, 1, -1, 0, -2, -1, -4, -2, 4), (0, 1, 1, 0, 0, 0, -1, 0, -2, 0, 0), (0, 0, -2, 0, 0, 0, 1, 1, 2, 1, 0), (0, 1, -1, 0, 0, 0, 1, 0, 0, 0, 0),(0, 0, -2, 0, 1, 0, 1, 0, 2, 1, 0), (0, 0, 1, 1, -1, 1, -2, 0, -4, -2, 2), (0, 1, 2, 0, -2, 1, -1, -1, -4, -2, 2), (0, -1, 0, -1, 1, -1, 1, 1, 2, 1, 0)]
@@ -103,18 +93,6 @@ class Truncated:
 	def mixColumnAndShiftRow(inX,outY,ineq):
 
 		eqn = []
-
-		"""inX = [inX[0],inX[13],inX[10],inX[7],inX[4],inX[1],inX[14],inX[11],inX[8],inX[5],inX[2],inX[15],inX[12],inX[9],inX[6],inX[3]]
-		
-    
-		inX1 = inX[0:4]
-		outY1 = outY[0:4]
-		inX2 = inX[4:8]
-		outY2 = outY[4:8]
-		inX3 = inX[8:12]
-		outY3 = outY[8:12]
-		inX4 = inX[12:16]
-		outY4 = outY[12:16]"""
 		
 		inX1 = [inX[0],inX[4],inX[8],inX[12]]
 		outY1 = [outY[0],outY[4],outY[8],outY[12]]
@@ -136,18 +114,6 @@ class Truncated:
 	def mixColumnAndShiftRowPre(inX,outY,ineq):
 
 		eqn = []
-
-		"""inX = [inX[0],inX[13],inX[10],inX[7],inX[4],inX[1],inX[14],inX[11],inX[8],inX[5],inX[2],inX[15],inX[12],inX[9],inX[6],inX[3]]
-		
-    
-		inX1 = inX[0:4]
-		outY1 = outY[0:4]
-		inX2 = inX[4:8]
-		outY2 = outY[4:8]
-		inX3 = inX[8:12]
-		outY3 = outY[8:12]
-		inX4 = inX[12:16]
-		outY4 = outY[12:16]"""
 		
 		inX1 = [inX[0],inX[4],inX[8],inX[12]]
 		outY1 = [outY[0],outY[4],outY[8],outY[12]]
@@ -180,16 +146,8 @@ class BasicTools:
 		
 	def VarGen(s,n):
 	    return [str(s) + '_' + str(n) + '_' + str(i) for i in range(0,16)]
+	    
 	def plusTerm(in_vars):
-		"""
-		>>> BasicTools.plusTerm(['x','y','z'])
-		'x + y + z'
-		>>> BasicTools.plusTerm(['x','y'])
-		'x + y'
-		>>> BasicTools.plusTerm(['x','y','z','a','b'])
-		'x + y + z + a + b'
-		>>>
-		"""
 		t = ''
 		for v in in_vars:
 		    t = t + v + ' + '
@@ -197,20 +155,12 @@ class BasicTools:
 		return t[0:-3]
 
 	def MinusTerm(in_vars):
-		"""
-		>>> BasicTools.plusTerm(['x','y','z'])
-		'x + y + z'
-		>>> BasicTools.plusTerm(['x','y'])
-		'x + y'
-		>>> BasicTools.plusTerm(['x','y','z','a','b'])
-		'x + y + z + a + b'
-		>>>
-		"""
 		t = ''
 		for v in in_vars:
 		    t = t + v + ' - '
 
 		return t[0:-3]	    
+		
 	def equalConstraints(x, y):
 		assert len(x) == len(y)
 		c = []
@@ -231,52 +181,25 @@ class BasicTools:
 		for i in range(0, len(x)):
 	    		c = c + [x[i] + ' + ' + y[i] + ' - ' + z[i] + ' >= 0']
 		return c			    
-		
-	def transpose(M):
-		"""
-		Transpose the matrix M
-		>>> M = [[1,0,1,1],[1,0,0,0],[0,1,1,0],[1,0,1,0]]
-		>>>
-		>>> BasicTools.transpose(M)
-		[[1, 1, 0, 1], [0, 0, 1, 0], [1, 0, 1, 1], [1, 0, 0, 0]]
-		>>>
-		>>>
-		"""
-		m = len(M)
-		n = len(M[0])
-
-		Mt = []
-		for i in range(0, n):
-		    row = [M[k][i] for k in range(0, m)]
-		    Mt.append(row)
-
-		return Mt		
+				
 	def getVariables(C):
 		V = set([])
-		#for s in C :
-		#print(s)
 		temp = C.strip()
-		#print(temp)
 		        
 		temp = temp.replace('+', ' ')
 		temp = temp.replace('-', ' ')
 		temp = temp.replace('>=', ' ')
 		temp = temp.replace('<=', ' ')
 		temp = temp.replace('=', ' ')
-		        
-		#print(temp)
 		temp = temp.split()
-		#print(temp)
 		for v in temp :
 		        if not v.isdecimal():
 		                V.add(v)
-		#print(V)
 		return V
 
-class Extension:	
-	print("Extension")	
+class Extension:		
 	def ForwardDiff_LinearLayer(M, V_in, V_out):
-		"""
+		"""from MITM code:
 		>>> M = [[1,0,1,1],[1,0,0,0],[0,1,1,0],[1,0,1,0]]
 		>>> a = ['a0', 'a1', 'a2', 'a3']
 		>>> b = ['b0', 'b1', 'b2', 'b3']
@@ -343,7 +266,6 @@ class Extension:
 		return constr	
 
 	def McRelImprovementForward(inX,W):
-		#T = [("x3+y2'"),("x1+y0'"),("x3+y0'"),("x0+y3'"),("x2+y1'"),("x2'+y1"),("x0'+y3"),("y2'+y3"),("x1'+x3'+y0+y3'"),("y1+y2'"),("x3'+y1'+y2+y3'"),("y0'+y3")]
 		T=[("x2+y3'"),("x0+y1'"),("x2+y1'"),("x1+y2'"),("x3+y0'"),("x3'+y0"),("x1'+y2"),("y2+y3'"),("x0'+x2'+y1+y2'"),("y0+y3'"),("x2'+y0'+y2'+y3"),("y1'+y2")]
 		eqn = []
 
@@ -400,7 +322,6 @@ class Extension:
 		
 	def McRelImprovementBackward(inX,W):
 		T = [("x3+y2'"),("x1+y0'"),("x3+y0'"),("x0+y3'"),("x2+y1'"),("x2'+y1"),("x0'+y3"),("y2'+y3"),("x1'+x3'+y0+y3'"),("y1+y2'"),("x3'+y1'+y2+y3'"),("y0'+y3")]
-		#T=[("x2+y3'"),("x0+y1'"),("x2+y1'"),("x1+y2'"),("x3+y0'"),("x3'+y0"),("x1'+y2"),("y2+y3'"),("x0'+x2'+y1+y2'"),("y0+y3'"),("x2'+y0'+y2'+y3"),("y1'+y2")]
 		eqn = []
 
 		for t in T:
@@ -460,9 +381,7 @@ class Extension:
 		m = len(M)
 		n = len(M[0])
 		constr = []
-		# constr2=[]
-		# constr3=[]
-		# constr4=[]
+
 		for j in range(0, 4):#This Forloop Indicates That How Yi and Ti(variable) Related (Yi >= Ti).Yi is output of mixcolumn matrix, and for each active nibble we consider T variable
 			constr=constr+[V_out[j] + ' - ' + t_variable[j] + ' >= 0' ]
 		if True:
@@ -471,9 +390,6 @@ class Extension:
 				terms1=[V_in[j] for j in range(0, n) if M[i][j] == 1]
 				constr = constr + [BasicTools.plusTerm(terms1) + ' - ' + str(s) + ' ' + V_out[i] + ' + ' + str(s) + ' ' + t_variable[i] + ' >= 0']
 		if True:
-			# for j in range(0, m):#This Forloop Is used to Prevent ai(input of mixcolumn matrix) from acting Unnecessarily
-			#      terms2=[V_out[i] for i in range(0, n) if M[i][j] == 1]
-			#      constr3 = constr3 + [Tools.plusTerm(terms2) + ' - ' + ' ' + V_in[j] + ' >= 0'] This Forloop Is not necessary because the Next One covers All Contraint That we Need In Our Model
 
 			for j in range(0, m):#This Forloop shows that if Ti variable are now active and we want to describe the constraints
 				s = sum(M[k][j] for k in range(0,len(M))) # the number of 1s in column j
@@ -579,7 +495,6 @@ class Extension:
 		return Constr		
         	    		    
 if __name__ == '__main__':
-	print("HI")
 	const=[]
 	fileobj = open(filename_model, "w")	
 	#----------------------------------------2
@@ -801,7 +716,6 @@ if __name__ == '__main__':
 	
 	
 	m = read(filename_model)
-	m.Params.threads=192
 	#m.Params.PoolSolutions=2000000000
 	m.optimize()
 	print("m.solcount=*************")
