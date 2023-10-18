@@ -199,25 +199,8 @@ class BasicTools:
 
 class Extension:		
 	def ForwardDiff_LinearLayer(M, V_in, V_out):
-		"""from MITM code:
-		>>> M = [[1,0,1,1],[1,0,0,0],[0,1,1,0],[1,0,1,0]]
-		>>> a = ['a0', 'a1', 'a2', 'a3']
-		>>> b = ['b0', 'b1', 'b2', 'b3']
-		>>>
-		>>> for c in MITMConstraints.ForwardDiff_LinearLayer(M, a, b): print(c)
-		...
-		3 b0 -  a0 - a2 - a3 >= 0
-		a0 + a2 + a3 - b0 >= 0
-		1 b1 -  a0 >= 0
-		a0 - b1 >= 0
-		2 b2 -  a1 - a2 >= 0
-		a1 + a2 - b2 >= 0
-		2 b3 -  a0 - a2 >= 0
-		a0 + a2 - b3 >= 0
-		>>>
-		"""
-		assert len(M[0]) == len(V_in), "The input is not compatible with the matrix"
-		assert len(M) == len(V_out), "The output is not compatible with the matrix"
+		assert len(M[0]) == len(V_in)
+		assert len(M) == len(V_out)
 
 
 		m = len(M)
@@ -232,25 +215,8 @@ class Extension:
 
 		return constr
 	def LinearLayer(M, V_in, V_out):
-		"""
-		>>> M = [[1,0,1,1],[1,0,0,0],[0,1,1,0],[1,0,1,0]]
-		>>> a = ['a0', 'a1', 'a2', 'a3']
-		>>> b = ['b0', 'b1', 'b2', 'b3']
-		>>>
-		>>> for c in MITMConstraints.ForwardDiff_LinearLayer(M, a, b): print(c)
-		...
-		3 b0 -  a0 - a2 - a3 >= 0
-		a0 + a2 + a3 - b0 >= 0
-		1 b1 -  a0 >= 0
-		a0 - b1 >= 0
-		2 b2 -  a1 - a2 >= 0
-		a1 + a2 - b2 >= 0
-		2 b3 -  a0 - a2 >= 0
-		a0 + a2 - b3 >= 0
-		>>>
-		"""
-		assert len(M[0]) == len(V_in), "The input is not compatible with the matrix"
-		assert len(M) == len(V_out), "The output is not compatible with the matrix"
+		assert len(M[0]) == len(V_in)
+		assert len(M) == len(V_out)
 
 
 		m = len(M)
